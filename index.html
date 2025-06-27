@@ -29,16 +29,104 @@
 ⠀⠀⠀⠀⡇⣿⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠦⠀⠀⠀⠀⠀⠀⡇⢹⢿⡀
 ⠀⠀⠀⠀⠁⠛⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠼⠇⠁
       </pre>
-
       <div class="links inline-links">
         <a href="https://jellyfin.deepgrave.net" target="_blank">Jellyfin</a>
         <a href="https://jellyseerr.deepgrave.net" target="_blank">Jellyseerr</a>
       </div>
-
-      <div class="prompt">
-        <span class="prompt-text">sevro@deepgrave</span>:<span class="directory">~</span><span class="dollar">$</span><span class="cursor">█</span>
-      </div>
+      <div id="history" class="history"></div>
     </div>
   </div>
+  <script>
+    const historyDiv = document.getElementById('history');
+    let history = [];
+    let typing = false;
+
+    function renderHistory() {
+      let out = '';
+      history.forEach(entry => out += entry + '\n');
+      // Only add prompt/input if not typing
+      if (!typing) {
+        out += `<span class="prompt-text">sevro@deepgrave</span>:<span class="directory">~</span><span class="dollar">$</span> <input id="terminal-input" class="terminal-input" autocomplete="off" autofocus spellcheck="false" />`;
+      }
+      historyDiv.innerHTML = out;
+      const input = document.getElementById('terminal-input');
+      if (input && !typing) input.focus();
+      historyDiv.scrollTop = historyDiv.scrollHeight;
+    }
+
+    function typeOutput(output, done) {
+      typing = true;
+      renderHistory();
+      let i = 0;
+      let container = document.createElement('pre');
+      container.className = 'terminal-response';
+      historyDiv.appendChild(container);
+
+      function typeNext() {
+        if (i < output.length) {
+          container.innerHTML += output[i] === '\n' ? '<br>' : output[i];
+          i++;
+          historyDiv.scrollTop = historyDiv.scrollHeight;
+          setTimeout(typeNext, 8); // Adjust speed as needed
+        } else {
+          typing = false;
+          history.push(container.outerHTML);
+          renderHistory();
+          if (done) done();
+        }
+      }
+      typeNext();
+    }
+
+    // Initial render
+    renderHistory();
+
+    // Command submission
+    historyDiv.addEventListener('keydown', async (e) => {
+      if (e.target.id === 'terminal-input' && e.key === 'Enter' && !typing) {
+        e.preventDefault();
+        const input = e.target;
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        // Handle clear command
+        if (cmd === "clear") {
+          history = [];
+          renderHistory();
+          return;
+        }
+        // Add command to history
+        history.push(
+          `<span class="prompt-text">sevro@deepgrave</span>:<span class="directory">~</span><span class="dollar">$</span> ${cmd}`
+        );
+        typing = true;
+        renderHistory();
+        try {
+          const res = await fetch('http://192.168.0.41:5000/api/terminal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input: cmd })
+          });
+          if (!res.ok) throw new Error("Network error");
+          const data = await res.json();
+          if (data.output && data.output.length > 0) {
+            typeOutput(data.output, () => {});
+          } else {
+            history.push(`<div class="terminal-error">[No response]</div>`);
+            typing = false;
+            renderHistory();
+          }
+        } catch (err) {
+          history.push('<div class="terminal-error">[Error communicating with AI]</div>');
+          typing = false;
+          renderHistory();
+        }
+      }
+    });
+
+    historyDiv.addEventListener('click', () => {
+      const input = document.getElementById('terminal-input');
+      if (input && !typing) input.focus();
+    });
+  </script>
 </body>
 </html>

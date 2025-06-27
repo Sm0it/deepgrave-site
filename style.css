@@ -1,5 +1,3 @@
-/* style.css */
-
 body {
     margin: 0;
     padding: 0;
@@ -10,8 +8,9 @@ body {
   }
   
   .crt {
-    position: relative;
-    width: 100%;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
     height: 100vh;
     padding: 2rem;
     box-sizing: border-box;
@@ -25,6 +24,9 @@ body {
     );
     animation: flicker 2s infinite steps(60, end);
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    border-radius: 0;
+    box-shadow: none;
   }
   
   @keyframes flicker {
@@ -51,16 +53,21 @@ body {
   }
   
   .subtle-blue-glow {
+    /* Optional subtle glow around the screen */
     box-shadow:
       0 0 15px rgba(180, 220, 255, 0.2),
       inset 0 0 30px rgba(180, 220, 255, 0.1);
   }
   
   .terminal {
-    white-space: pre-wrap;
-    overflow: auto;
-    position: relative;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
   }
   
   .ascii {
@@ -100,11 +107,51 @@ body {
     color: #ffffff;
   }
   
+  .history {
+    flex: 1 1 0%;
+    margin: 0.75rem 0 0.5rem 0;
+    font-size: 14px;
+    color: #e5e5e5;
+    line-height: 1.3;
+    background: none;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    max-height: 100%;
+    min-height: 0;
+    border-radius: 0;
+    padding-right: 4px;
+  }
+  
+  /* Tight output for a real terminal look */
+  .terminal-response {
+    color: #e5e5e5;
+    background: none;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+  
+  .terminal-error {
+    color: #ff4c4c;
+    background: none;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+  
   .prompt {
     font-size: 16px;
     color: #bcd1e4;
     text-align: left;
     margin-left: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
   }
   
   .prompt-text {
@@ -122,6 +169,18 @@ body {
     margin-right: 0.25rem;
   }
   
+  .terminal-input {
+    background: transparent;
+    border: none;
+    color: #e5e5e5;
+    font-family: monospace;
+    font-size: 16px;
+    outline: none;
+    width: 60vw;
+    max-width: 600px;
+    margin-left: 0.5rem;
+  }
+  
   .cursor {
     display: inline-block;
     width: 8px;
@@ -135,14 +194,17 @@ body {
     }
   }
   
-  .history {
-    margin: 1rem;
-    font-size: 14px;
-    color: #a9a9a9;
-    line-height: 1.3;
-  }
-  
-  .blink {
-    animation: blink 1s step-start infinite;
-  }
-  
+  .terminal-input {
+    background: transparent;
+    border: none;
+    color: #e5e5e5;
+    font-family: monospace;
+    font-size: 16px;
+    outline: none;
+    width: 40vw;
+    max-width: 600px;
+    margin-left: 0.3rem;
+    padding: 0;
+    vertical-align: middle;
+    caret-color: #fff;
+}
