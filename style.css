@@ -1,0 +1,148 @@
+/* style.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #0d0d0d;
+    font-family: monospace;
+    color: #e5e5e5;
+    overflow: hidden;
+  }
+  
+  .crt {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+    background: #0d0d0d;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    animation: flicker 2s infinite steps(60, end);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+  
+  @keyframes flicker {
+    0%, 100% {
+      opacity: 1;
+    }
+    98% {
+      opacity: 0.95;
+    }
+  }
+  
+  .edge-fade::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    background: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    z-index: 10;
+  }
+  
+  .subtle-blue-glow {
+    box-shadow:
+      0 0 15px rgba(180, 220, 255, 0.2),
+      inset 0 0 30px rgba(180, 220, 255, 0.1);
+  }
+  
+  .terminal {
+    white-space: pre-wrap;
+    overflow: auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .ascii {
+    color: #ff4c4c;
+    font-size: 13px;
+    line-height: 1.1;
+    text-align: center;
+    animation: pulse-wolf 4s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-wolf {
+    0%, 100% {
+      color: #ff4c4c;
+      text-shadow: 0 0 4px #ff4c4c;
+    }
+    50% {
+      color: #ff1d1d;
+      text-shadow: 0 0 10px #ff1d1d;
+    }
+  }
+  
+  .links.inline-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+  
+  .links a {
+    color: #7fb0ad;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+  }
+  
+  .links a:hover {
+    color: #ffffff;
+  }
+  
+  .prompt {
+    font-size: 16px;
+    color: #bcd1e4;
+    text-align: left;
+    margin-left: 1rem;
+  }
+  
+  .prompt-text {
+    color: #b91c1c;
+    font-weight: bold;
+  }
+  
+  .directory {
+    color: #7fb0ad;
+    margin: 0 0.25rem;
+  }
+  
+  .dollar {
+    color: #d8b5ce;
+    margin-right: 0.25rem;
+  }
+  
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    background: #ffffff;
+    animation: blink 1s step-start infinite;
+  }
+  
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  
+  .history {
+    margin: 1rem;
+    font-size: 14px;
+    color: #a9a9a9;
+    line-height: 1.3;
+  }
+  
+  .blink {
+    animation: blink 1s step-start infinite;
+  }
+  
